@@ -1,14 +1,21 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       const res = await axios.post("http://localhost:5000/login", { email, password });
-      alert(res.data.message);
+      if (res.data.success) {
+        localStorage.setItem("isAuthenticated", "true");
+        navigate('/resources');
+      } else {
+        alert("Invalid credentials");
+      }
     } catch (error) {
       alert("Invalid credentials");
     }
@@ -24,6 +31,7 @@ function Login() {
             type="email" 
             className="form-control" 
             placeholder="Enter email" 
+            value={email}
             onChange={(e) => setEmail(e.target.value)} 
           />
         </div>
@@ -33,6 +41,7 @@ function Login() {
             type="password" 
             className="form-control" 
             placeholder="Enter password" 
+            value={password}
             onChange={(e) => setPassword(e.target.value)} 
           />
         </div>
